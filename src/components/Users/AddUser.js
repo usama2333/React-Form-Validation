@@ -1,12 +1,14 @@
 import React , {useState} from 'react'
 import Button from '../UI/Button';
 import Card from '../UI/Card';
+import ErrorModal from '../UI/ErrorModal';
 import classes from './AddUser.module.css';
 
 const  AddUser = (props) => {
 
     const [enteredUsername , setEnteredUsername] = useState('');
     const [enteredAge , setEnteredAge] = useState('');
+    const [error , setError] = useState();
 
 
 
@@ -14,10 +16,18 @@ const  AddUser = (props) => {
         event.preventDefault();
 
         if(enteredUsername.trim().length === 0 || enteredAge.trim().length === 0) {
+            setError({
+                title : 'Invalid Input',
+                message : 'Please enter a valid name or age (Non-empty) values'
+            });
             return;
         }
 
         if(+enteredAge < 1) {
+            setError({
+                title : 'Invalid Age',
+                message : 'Please enter a valid age (age > 0)'
+            });
             return;
         }
 
@@ -40,8 +50,13 @@ const  AddUser = (props) => {
         setEnteredAge(event.target.value);
     });
 
+    const errorHandler = () => {
+        setError(null);
+    };
+
   return (
     <div>
+    {error && <ErrorModal title ={error.title} message = {error.message} onConfirm ={errorHandler} />}
 {/* here we send prop to the card component and classes are add here with props */}
     <Card classProp = {classes.input}>
       <form onSubmit={addUserHandler}>
